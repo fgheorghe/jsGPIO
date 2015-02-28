@@ -11,19 +11,19 @@ Install GPIO Admin, to allow users other than root to access the GPIO:
 
 https://github.com/quick2wire/quick2wire-gpio-admin
 
-# Install JSGPIOServer NodeJS Dependencies #
+## Install JSGPIOServer NodeJS Dependencies ##
 
 To install JSGPIOServer dependencies, issue:
 
 npm install
 
-# Configuration #
+## Configuration ##
 
 To configure the application change SocketIo.URL to point to your Raspberry PI IP address, found in index.html.
 
 Optionally, change the listening port for the example server, by editing example-server.js
 
-# Start server #
+## Start server ##
 
 To start the example server, issue:
 
@@ -33,7 +33,9 @@ Or:
 
 nodejs example-server.js
 
-# Developer notes #
+Navigate to your Raspberry PI IP and port to view the example.
+
+## Developer notes ##
 
 jsgpio-server.js - Provides a basic NodeJS module. See documentation for details.
 
