@@ -50,11 +50,12 @@
             /**
              * Example Function used for emitting write events.
              * @param value
+             * @param pin
              */
-            function writeToGPIO(value) {
+            function writeToGPIO(value, pin) {
                 // Ensure values are _always_ numbers.
-                var pin = parseInt(document.getElementById('pin').value, 10),
-                    value = parseInt(value, 10);
+                value = parseInt(value, 10);
+                pin = typeof pin !== "undefined" ? pin : parseInt(document.getElementById('pin').value, 10);
 
                 Example.write(pin, value);
             }
@@ -62,6 +63,7 @@
     </head>
     <body>
         <table>
+            <tr><td colspan="2">Enter a pin number and set it on or off.</td></tr>
             <tr>
                 <td>Pin:</td>
                 <td><input type="text" value="" name="pin" id="pin"/></td>
@@ -74,6 +76,15 @@
                 </td>
             </tr>
         </table>
+        <br/>
+        <div>Hover in and out of one of the boxes, and pins 5 (yellow) and 3 (red) will turn on or off.</div>
+        <table style="text-align: center;">
+            <tr>
+                <td><div onmouseout="writeToGPIO(0, 5);" onmouseover="writeToGPIO(1, 5);" style="width: 50px; height: 50px; background-color: yellow;">&nbsp;</div></td>
+                <td><div onmouseout="writeToGPIO(0, 3);" onmouseover="writeToGPIO(1, 3);"  style="width: 50px; height: 50px; background-color: red;">&nbsp;</div></td>
+            </tr>
+        </table>
+        <div>Message history, reverse order (last first).</div>
         <div name="messages" id="messages">&nbsp;</div>
     </body>
 </html>
