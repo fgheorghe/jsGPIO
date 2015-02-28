@@ -1,0 +1,14 @@
+{
+    "name": "JSGPIOServer",
+    "version": "1.0.0",
+    "description": "GPIO Server",
+    "author": "Grosan Flaviu Gheorghe",
+    "dependencies": {
+        "express": "3.x.x",
+        "socket.io": "1.0",
+        "pi-gpio" : "*"
+    },
+    "scripts": {
+        "start" : "node example-server.js"
+    }
+}

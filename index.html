@@ -1,0 +1,79 @@
+<html>
+    <head>
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="/jsgpio-client.js"></script>
+        <script>
+            var Example = new JSGPIOClient({
+               SocketIo: {
+                   // Change 192.168.0.104 to the IP address of your Raspberry PI.
+                   URL: "http://192.168.0.104"
+               },
+               GPIO: {
+                   // 'Wrote' event handler.
+                   wroteEventHandler: function(data) {
+                       var currentDate = new Date();
+                       // Write some debug text.
+                       document.getElementById('messages').innerHTML =
+                                '<br/>[' +
+                                        currentDate.getHours() +
+                                        ':' +
+                                        currentDate.getMinutes() +
+                                        ':' +
+                                        currentDate.getSeconds() +
+                                        ']&nbsp;' +
+                                        'Pin: ' + data.pin +
+                                        '&nbsp;Value: ' + data.value +
+                                        '<br/>' +
+                                        document.getElementById('messages').innerHTML
+                   },
+                   // Err event handler.
+                   errEventHandler: function(data) {
+                       var currentDate = new Date();
+                       // Write some debug text.
+                       document.getElementById('messages').innerHTML =
+                                       '<br/>[' +
+                                               currentDate.getHours() +
+                                               ':' +
+                                               currentDate.getMinutes() +
+                                               ':' +
+                                               currentDate.getSeconds() +
+                                       ']&nbsp;' +
+                                       'Pin: ' + data.pin +
+                                       '&nbsp;Value: ' + data.value +
+                                       '&nbsp;Error: ' + data.message +
+                                       '<br/>' +
+                                       document.getElementById('messages').innerHTML
+                   }
+               }
+            });
+
+            /**
+             * Example Function used for emitting write events.
+             * @param value
+             */
+            function writeToGPIO(value) {
+                // Ensure values are _always_ numbers.
+                var pin = parseInt(document.getElementById('pin').value, 10),
+                    value = parseInt(value, 10);
+
+                Example.write(pin, value);
+            }
+        </script>
+    </head>
+    <body>
+        <table>
+            <tr>
+                <td>Pin:</td>
+                <td><input type="text" value="" name="pin" id="pin"/></td>
+             </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td>
+                    <input value="On" type="button" onclick="writeToGPIO(1);"/>
+                    &nbsp;<input value="Off" type="button" onclick="writeToGPIO(0);"/>
+                </td>
+            </tr>
+        </table>
+        <div name="messages" id="messages">&nbsp;</div>
+    </body>
+</html>
