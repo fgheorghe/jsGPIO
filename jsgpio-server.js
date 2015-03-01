@@ -7,6 +7,9 @@ var JSGPIOServer = function (config) {
     // Store configuration for later use.
     this.config = config;
 
+    // Stores open pins.
+    this.openPins = {};
+
     // Create server.
     this.createServer();
 
@@ -46,14 +49,12 @@ JSGPIOServer.prototype.createServer = function() {
 }
 
 /**
- * Prepares the GPIO helper: https://www.npmjs.com/package/pi-gpio.
- *
- * Instruction on how to install for the system user running this server: https://www.npmjs.com/package/pi-gpio
+ * Prepares the GPIO helper: https://github.com/fivdi/onoff#gpiogpio-direction-edge.
  *
  * @function
  */
 JSGPIOServer.prototype.prepareGPIOHandler = function() {
-    this.gpio = require("pi-gpio");
+    this.gpio = require('onoff').Gpio;
 }
 
 /**
@@ -87,23 +88,31 @@ JSGPIOServer.prototype.writeEventHandler = function (socket) {
         console.log(data);
 
         try {
-            // Write to pin, as per: https://www.npmjs.com/package/pi-gpio
-            this.gpio.open(data.pin, "output", function(error) {
-                if (error) {
-                    this.emitErrEvent(socket, data, error.message);
-                } else {
-                    this.gpio.write(data.pin, data.value, function() {
-                        this.gpio.close(data.pin, function() {
-                            // Notify the client that we sent data.
-                            this.emitWroteEvent(socket, data);
-                        }.bind(this));
-                    }.bind(this));
-                }
-            }.bind(this));
+            if (typeof this.openPins[data.pin] === "undefined") {
+                this.openPins[data.pin] = new this.gpio(data.pin, 'out');
+                console.log("Opened pin: " + data.pin);
+            }
+            this.openPins[data.pin].writeSync(data.value);
+            this.emitWroteEvent(socket, data);
         } catch (ex) {
             this.emitErrEvent(socket, data, ex.message);
         }
     }.bind(this);
+}
+
+/**
+ * Releases all open pins, and terminates the process. Example usage:
+ *
+ * process.on('SIGINT', ExampleServer.cleanUpAndTerminateProcess);
+ *
+ * @function
+ */
+JSGPIOServer.prototype.cleanUpAndTerminateProcess = function() {
+    var pin;
+    for (pin in this.openPins) {
+        this.openPins[pin].unexport();
+    }
+    process.exit();
 }
 
 /**
