@@ -6,7 +6,7 @@
     "dependencies": {
         "express": "3.x.x",
         "socket.io": "1.0",
-        "pi-gpio" : "*"
+        "onoff": "*"
     },
     "scripts": {
         "start" : "node example-server.js"
